@@ -1,0 +1,52 @@
+int pirPin = 2;
+int buzzerPin = 8;
+int redLed = 13;
+int greenLed = 12;
+int resetButton = 4;
+
+bool alarmState = false;
+bool resetLock = false;
+
+void setup() {
+  pinMode(pirPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(redLed, OUTPUT);
+  pinMode(greenLed, OUTPUT);
+  pinMode(resetButton, INPUT_PULLUP);
+
+  digitalWrite(greenLed, HIGH);
+}
+
+void loop() {
+
+  int motion = digitalRead(pirPin);
+  int resetState = digitalRead(resetButton);
+
+  // Trigger alarm
+  if (motion == HIGH && !resetLock) {
+    alarmState = true;
+  }
+
+  // Reset button
+  if (resetState == LOW) {
+    alarmState = false;
+    resetLock = true;   
+    delay(300);         
+  }
+
+  // pir calm
+  if (motion == LOW) {
+    resetLock = false;
+  }
+
+  // output
+  if (alarmState) {
+    digitalWrite(redLed, HIGH);
+    digitalWrite(greenLed, LOW);
+    tone(buzzerPin, 1000);
+  } else {
+    digitalWrite(redLed, LOW);
+    digitalWrite(greenLed, HIGH);
+    noTone(buzzerPin);
+  }
+}
