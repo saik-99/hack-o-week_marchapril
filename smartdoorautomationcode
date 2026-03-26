@@ -1,0 +1,33 @@
+#include <Servo.h>
+
+const int trigPin = 10;
+const int echoPin = 9;
+int distance = 0;
+Servo myServo;
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  myServo.attach(3); 
+  myServo.write(0);  
+}
+
+long readDistance() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  return pulseIn(echoPin, HIGH);
+}
+
+void loop() {
+  distance = 0.01723 * readDistance();
+  
+  if (distance < 200) {
+    myServo.write(90);
+  } else {
+    myServo.write(0);
+  }
+  delay(100); 
+}
